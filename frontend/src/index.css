@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "custom";
+  src: url('./assets/custom.otf');
+  /* font-weight: 700; */
+  font-style: normal;
+}
+@font-face {
+  font-family: "customnew";
+  src: url('./assets/custom2.ttf');
+  /* font-weight: 700; */
+  font-style: normal;
+}
