@@ -3,6 +3,7 @@ const cors = require('cors')
 const fs = require('fs')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
+const { title } = require('process')
 const port = 3000
 
 dotenv.config()
@@ -41,7 +42,8 @@ app.post('/signUp', (req, res) => {
     if(!user){
         dataBase.push({
             username,
-            password
+            password,
+            todos : []
         })
 
         fs.writeFile("todo.json", JSON.stringify(dataBase), (err) => {
@@ -102,7 +104,46 @@ const auth = (req, res, next) => {
 }
 
 app.get('/home', auth, (req, res) => {
-    res.send(dataBase)
+    const username = req.user.username
+
+    const user = dataBase.find(user => user.username === username)
+
+    res.json({
+        todos : user.todos
+    })
+})
+
+app.post('/addTodo', auth, (req, res) => {
+    const {todoname} = req.body
+    const username = req.user.username
+
+    const user = dataBase.find(user => user.username === username)
+    // const index = dataBase.findIndex(user)
+    // console.log(index);
+    
+
+    if(!user){
+        res.status(404).json({message : "no user bro "})
+    }
+
+    user.todos.push({
+        title : todoname,
+    })
+
+    fs.writeFile("todo.json", JSON.stringify(dataBase), (err) => {
+        if(err) throw err
+    })
+
+    res.status(200).json({
+        message : "todo created ",
+        user
+    })
+})
+
+
+app.delete('/delete', (req, res) => {
+    const id = parseInt(req.params.id)
+
 })
 
 

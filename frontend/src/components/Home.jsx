@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faL, faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
-
+import { Link } from 'react-router-dom'
 
 
 const Home = () => {
@@ -11,11 +11,20 @@ const Home = () => {
     const [popUp, setPopUp] = useState(false)
     const [profile, setProfile] = useState(false)
     const [logInPopup, setlogInPopup] = useState(false)
+    const [addTodoButton, setaddTodoButton] = useState(false)
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
     // const navigate = useNavigate()
     axios.defaults.baseURL = 'http://localhost:3000';
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        if (token) {
+            // Optionally verify token with backend here
+            setProfile(true)
+        }
+    }, [])
+
 
     const logIn = () => {
         setlogInPopup(true)
@@ -38,6 +47,7 @@ const Home = () => {
             setUsername('')
             setPassword ('')
             setProfile(true)
+            setaddTodoButton(true)
             setPopUp(false)
             // navigate('/dashboard') 
         } catch (error) {
@@ -59,6 +69,7 @@ const Home = () => {
             setlogInPopup(false)
             setUsername('')
             setProfile(true)
+            setaddTodoButton(true)
             setPassword ('')
             // navigate('/dashboard') 
         } catch (error) {
@@ -66,9 +77,11 @@ const Home = () => {
         }
     }
 
-    const logOut = () => {
+    const logOut = (e) => {
+        e.preventDefault()
         localStorage.removeItem("token")
         setProfile(false)
+        setaddTodoButton(false)
     }
 
     const darkMode = () => {
@@ -110,38 +123,49 @@ const Home = () => {
         </div>
 
         <div>
-        {
+        {/* // */}
+        </div>
+{/* homescreen */}
+<div className='flex justify-center items-center mt-40 flex-col'>
+
+
+        {!(popUp || logInPopup ) && (<div className='flex justify-center items-center flex-col'>
+            <h1 className='font-custom sm:text-5xl text-xl'>100x devs Full Stack Todo Assignment </h1> 
+        </div>)}{
             popUp && (
-                <div className='sm:right-[4%] right-[10%] mt-10 absolute bg-gray-900 dark:bg-blue-100 rounded-md p-5 dark:backdrop-filter backdrop-filter dark:backdrop-blur-3xl backdrop-blur-3xl dark:bg-opacity-10 bg-opacity-10 border border-gray-100 sm:text-2xl'>
+                <div className='absolute bg-gray-900 dark:bg-blue-100 rounded-md p-5 dark:backdrop-filter backdrop-filter dark:backdrop-blur-3xl backdrop-blur-3xl dark:bg-opacity-10 bg-opacity-10 border border-gray-100 sm:text-2xl'>
                     <form onSubmit={createUser}>
-                        <label htmlFor="text" className='inline-block sm:w-[100px]'>username</label> <br />
+                        <label htmlFor="text" className='inline-block sm:w-[100px] mr-5'>username</label>
                         <input type="text" className='my-1 text-black rounded-l sm:w-[200px] pl-2' placeholder='username' value={username} onChange={e => setUsername(e.target.value)} /> <br />
-                        <label htmlFor="text" className='inline-block sm:w-[100px]'>password</label> <br />
+                        <label htmlFor="text" className='inline-block sm:w-[100px] mr-5'>password</label>
                         <input type="text" className='my-1 text-black rounded-l sm:w-[200px] pl-2 ' placeholder='password' value={password} onChange={e => setPassword(e.target.value)} /> <br />
-                        <button type='submit' className='bg-[#3b82f6] p-1 rounded-lg mt-3  sm:text-base'>signUp</button>
+                        <button type='submit' className='bg-[#3b82f6] p-1 rounded-lg mt-3 items-center	block mx-auto  sm:text-lg'>signUp</button>
                     </form>
                 </div>
             )
         }
         {
             logInPopup && (
-                <div className='sm:right-[4%] right-[10%] mt-10 absolute bg-gray-900 dark:bg-blue-100 rounded-md p-5 dark:backdrop-filter backdrop-filter dark:backdrop-blur-3xl backdrop-blur-3xl dark:bg-opacity-10 bg-opacity-10 border border-gray-100 sm:text-2xl'>
+                <div className=' absolute bg-gray-900 dark:bg-blue-100 rounded-md p-5 dark:backdrop-filter backdrop-filter dark:backdrop-blur-3xl backdrop-blur-3xl dark:bg-opacity-10 bg-opacity-10 border border-gray-100 sm:text-2xl'>
                     <form onSubmit={userLogIn}>
-                        <label htmlFor="text" className='inline-block sm:w-[100px]'>username</label> <br />
+                    <label htmlFor="text" className='inline-block sm:w-[100px] mr-5'>username</label>
                         <input type="text" className='my-1 text-black rounded-l sm:w-[200px] pl-2' placeholder='username' value={username} onChange={e => setUsername(e.target.value)} /> <br />
-                        <label htmlFor="text" className='inline-block sm:w-[100px]'>password</label> <br />
+                        <label htmlFor="text" className='inline-block sm:w-[100px] mr-5'>password</label>
                         <input type="text" className='my-1 text-black rounded-l sm:w-[200px] pl-2 ' placeholder='password' value={password} onChange={e => setPassword(e.target.value)} /> <br />
-                        <button type='submit' className='bg-[#3b82f6] p-1 rounded-lg mt-3  sm:text-base'>LogIn</button>
+                        <button type='submit' className='bg-[#3b82f6] p-1 rounded-lg mt-3 items-center	block mx-auto  sm:text-lg'>log In</button>
                     </form>
                 </div>
             )
+        }{
+            !addTodoButton && (<button className='bg-[#3b82f6] p-2 rounded-lg mt-10 sm:text-2xl'>buy now </button>)
+
         }
-        </div>
-{/* homescreen */}
-<div className='flex justify-center items-center mt-40 flex-col'>
-            <h1 className='font-custom sm:text-5xl text-xl'>100x devs Full Stack Todo Assignment </h1> 
-            <button className='bg-[#3b82f6] p-2 rounded-lg mt-10 sm:text-2xl'>buy now </button>
-        </div>
+        {
+            addTodoButton && ( <Link to="/todo"><button className='bg-[#3b82f6] p-2 rounded-lg mt-10 sm:text-2xl'>add todo </button> </Link> )
+
+        }
+
+</div>
         
 
         {/* footer  */}
