@@ -16,7 +16,8 @@ const Home = () => {
     const [password, setPassword] = useState('')
 
     // const navigate = useNavigate()
-    axios.defaults.baseURL = 'http://localhost:3000';
+    axios.defaults.baseURL = 'http://localhost:3000/'
+
     useEffect(() => {
         const token = localStorage.getItem('token')
         if (token) {
@@ -38,7 +39,7 @@ const Home = () => {
         e.preventDefault()
         try {
 
-            const response = await axios.post('/signUp', {
+            const response = await axios.post('http://localhost:3000/signUp', {
                 username,
                 password
             })
@@ -157,11 +158,11 @@ const Home = () => {
                 </div>
             )
         }{
-            !addTodoButton && (<button className='bg-[#3b82f6] p-2 rounded-lg mt-10 sm:text-2xl'>buy now </button>)
+            !profile && (<button className='bg-[#3b82f6] p-2 rounded-lg mt-10 sm:text-2xl'>buy now </button>)
 
         }
         {
-            addTodoButton && ( <Link to="/todo"><button className='bg-[#3b82f6] p-2 rounded-lg mt-10 sm:text-2xl'>add todo </button> </Link> )
+            profile && ( <Link to="/todo"><button className='bg-[#3b82f6] p-2 rounded-lg mt-10 sm:text-2xl'>add todo </button> </Link> )
 
         }
 
