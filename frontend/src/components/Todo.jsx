@@ -16,7 +16,7 @@ const Todo = () => {
     const [updatedInput, setupdatedInput] = useState(null)
     const [inputpop, setInputpop] = useState(false)
     
-    axios.defaults.baseURL = 'http://localhost:3000';
+    axios.defaults.baseURL = 'https://full-stack-todo-6gbw.onrender.com/';
     const navigate = useNavigate()
     // write about it 
 
