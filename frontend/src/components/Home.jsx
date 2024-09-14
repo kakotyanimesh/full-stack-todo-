@@ -17,7 +17,7 @@ const Home = () => {
     const [password, setPassword] = useState('')
 
     // const navigate = useNavigate()
-    axios.defaults.baseURL = ['https://full-stack-todo-6gbw.onrender.com', 'http://localhost:3000']
+    axios.defaults.baseURL = 'https://full-stack-todo-6gbw.onrender.com/'
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -40,7 +40,7 @@ const Home = () => {
         e.preventDefault()
         try {
 
-            const response = await axios.post('/signUp', {
+            const response = await axios.post('https://full-stack-todo-6gbw.onrender.com/signUp', {
                 username,
                 password
             })
