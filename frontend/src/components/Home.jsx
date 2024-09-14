@@ -17,7 +17,7 @@ const Home = () => {
     const [password, setPassword] = useState('')
 
     // const navigate = useNavigate()
-    axios.defaults.baseURL = 'https://full-stack-todo-6gbw.onrender.com/'
+    axios.defaults.baseURL = 'https://full-stack-todo-cbi0.onrender.com'
 
     useEffect(() => {
         const token = localStorage.getItem('token')
