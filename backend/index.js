@@ -4,14 +4,15 @@ const fs = require('fs')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 const { title } = require('process')
+const { error } = require('console')
 const port = 3000
 
 dotenv.config()
 const app = express()
 
 const corsoptions = {
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'POST', 'DELETE'],
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://full-stack-todo-sigma.vercel.app'],  
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }
@@ -127,6 +128,7 @@ app.post('/addTodo', auth, (req, res) => {
     }
 
     user.todos.push({
+        id: user.todos.length + 1,
         title : todoname,
     })
 
@@ -141,11 +143,64 @@ app.post('/addTodo', auth, (req, res) => {
 })
 
 
-app.delete('/delete', (req, res) => {
+app.delete('/delete/:id',auth, (req, res) => {
     const id = parseInt(req.params.id)
+    const username = req.user.username
+
+    const user = dataBase.find(user => user.username === username)
+
+    if(user) {
+        const index = user.todos.findIndex(t => t.id === id)
+        if(index === -1){
+            res.status(404).json({message : "todo not found !!"})
+        } else {
+            user.todos.splice(index, 1)
+
+            fs.writeFile('todo.json', JSON.stringify(dataBase), (err) => {
+                if(err) throw `the error in delete ${err}`
+
+                res.status(200).json({
+                    message : "todo deleted successfully !!"
+                })
+            })
+        }
+    } else {
+        res.status(403).json({
+            message : "todo not found !! "
+        })
+    }
+
+
 
 })
 
+
+app.put('/edit/:id', auth, (req, res) => {
+    const id = parseInt(req.params.id)
+    const username = req.user.username
+    const {todoname} = req.body
+
+    const user = dataBase.find(user => user.username === username)
+
+    if(user){
+        const index = user.todos.findIndex(t => t.id === id)
+        if(index === -1) {
+            res.status(404).json({
+                message : "no todo found "
+            })
+        } else {
+            user.todos[index].title = todoname || user.todos[index].title
+
+            fs.writeFile('todo.json', JSON.stringify(dataBase), (err) => {
+                if(err) throw `error in deleting ${err}`
+
+                res.status(200).json({
+                    message : "todo updated successfully"
+                })
+            })
+        }
+    } 
+})
 
 
 app.listen(port, () => console.log(`the app is running at port http://localhost:${port}`))
