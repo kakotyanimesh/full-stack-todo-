@@ -13,7 +13,8 @@ const Todo = () => {
     const [todoname, settodoName] = useState("")
     const [todoList, settodoList] = useState([])
     const [checkedTodos, setCheckedTodos] = useState({});
-    const [updatedTodo, setUpdatedTodo] = useState("")
+    const [updatedInput, setupdatedInput] = useState(null)
+    const [inputpop, setInputpop] = useState(false)
     
     axios.defaults.baseURL = 'http://localhost:3000';
     const navigate = useNavigate()
@@ -111,20 +112,39 @@ const Todo = () => {
         }
     }
 
-    // const todoUpdate = async (e, index) => {
-    //     e.preventDefault()
-    //     try {
-    //         const token = localStorage.getItem("token")
-    //         if(token){
-    //             const id = todoList[index].id
-    //             const response
-    //         }
-    //     } catch (error) {
-    //         console.log(`error while deleting todo ${error}`);
-    //     }
-    // }
+    const todoUpdate = async (e, index) => {
+        e.preventDefault()
+        setupdatedInput(index)
+        // setInputpop(true)
+    }
+
+    const handleUpdate = async (e, index) => {
+        e.preventDefault()
+        try {
+            const token = localStorage.getItem("token")
+            const upadtedTodo = todoList[index]
+
+            const response = await axios.put(`/edit/${upadtedTodo.id}`,
+                {todoname : upadtedTodo.title},
+                {
+                    headers : {
+                        Authorization : token
+                    }
+                }
+            )
+
+            if(response.status === 200) {
+                setupdatedInput("")       
+            }
+        } catch (error) {
+            console.log(`error in upadting ${error}`);
+            
+        }
+    }
+
+
   return (
-    <div className='dark:bg-[#0a0b10] bg-[#ffffff] min-h-screen dark:text-white font-customnew'>
+    <div className='dark:bg-gradient-to-r dark:from-[#415687] dark:to-[#020f2e] bg-gradient-to-r from-[#a5aab5] to-[#b7c6eb] min-h-screen dark:text-white font-customnew'>
         <div className='flex justify-between sm:px-32 sm:pt-10 px-7 pt-10 text-sm sm:text-xl'>
             <div>
                 <h1 className='font-light text-3xl'>Todo App</h1>
@@ -148,7 +168,7 @@ const Todo = () => {
         </div>
 
         {/* todoadd */}
-        <div className='flex justify-center items-center mt-20'>
+        <div className='flex justify-center items-center mt-28 sm:mt-20'>
             <form onSubmit={addTodo} method="post" className='absolute bg-gray-900 dark:bg-blue-100 rounded-md p-5 dark:backdrop-filter backdrop-filter dark:backdrop-blur-3xl backdrop-blur-3xl dark:bg-opacity-10 bg-opacity-10 border border-gray-100 sm:text-2xl'>
                 <label htmlFor="text" className='inline-block mr-5'>Write your Todo </label> <br />
                 <input type="text" className='my-1 text-black rounded-l sm:w-[200px] pl-2' value={todoname} onChange={e => settodoName(e.target.value)}  />
@@ -164,16 +184,49 @@ const Todo = () => {
                         <li
                             key={index}
                             className='p-2 border-2 m-2 bg-gray-900 dark:bg-blue-100 rounded-md dark:backdrop-filter backdrop-filter dark:backdrop-blur-3xl backdrop-blur-3xl dark:bg-opacity-10 bg-opacity-10 border border-gray-100 flex items-center justify-between'
-                        >
+                        >   
+                            <div>
                             <input
                                 type='checkbox'
                                 cclassName='w-4 h-4 mr-16'
                                 checked={checkedTodos[index] || false} // Handle the checked state
                                 onChange={() => doneTodo(index)}
                             />{' '}
-                            <span className={`${checkedTodos[index] ? 'line-through' : ''}`}>{todo.title}</span>
-                            <button className='bg-[#3b82f6] p-1 rounded-lg ml-2 sm:text-lg' onClick={e => deleteTodo(e, index)}>delete </button>
-                            <button className='bg-[#3b82f6] p-1 rounded-lg ml-2 sm:text-lg' onClick={e => todoUpdate(e, index)}>update  </button>
+                            <span className={`${checkedTodos[index] ? 'line-through' : ''}`}>
+                                {
+                                    (updatedInput === index) ? (
+                                        <input type="text" 
+                                        value={todo.title}
+                                        className='my-1 text-black rounded-l sm:w-[200px] pl-2'
+                                        onChange={e => {
+                                            const newTodolist = [...todoList]
+                                            newTodolist[index].title = e.target.value
+                                            settodoList(newTodolist)
+                                        }}
+                                        />
+                                    ) : (
+                                        <>{todo.title}</>
+                                    )
+                                }
+                            </span>
+                            </div>
+                           
+                            <div>
+                            {
+                                updatedInput === index ? (
+                                    <button className='bg-[#3b82f6] p-1 rounded-lg ml-2 sm:text-lg' onClick={e => handleUpdate(e, index)}>save  </button>
+
+                                ) : (
+                                    <>
+                                    <button className='bg-[#3b82f6] p-1 rounded-lg ml-2 sm:text-lg' onClick={e => todoUpdate(e, index)}>update  </button>
+                                    <button className='bg-[#3b82f6] p-1 rounded-lg ml-2 sm:text-lg' onClick={e => deleteTodo(e, index)}>delete </button>
+
+                                    </>
+                                    
+                                )
+                            }
+                            </div> 
+                            
                         </li>
                     ))}
                 </ul>
