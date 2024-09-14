@@ -10,14 +10,14 @@ const port = 3000
 dotenv.config()
 const app = express()
 
-// const corsoptions = {
-//     origin: ['https://full-stack-todo-sigma.vercel.app/'],  
-//     methods: ['GET', 'POST', 'DELETE', 'PUT'],
-//     allowedHeaders: ['Content-Type', 'Authorization'],
-//     credentials: true,
-// }
+const corsoptions = {
+    origin: ['https://full-stack-todo-sigma.vercel.app'],  
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+}
 
-app.use(cors())
+app.use(cors(corsoptions))
 app.use(express.json())
 const jwt_secret = process.env.jwt_secret 
 
